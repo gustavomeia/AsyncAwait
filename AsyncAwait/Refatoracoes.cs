@@ -7,17 +7,20 @@ namespace AsyncAwait
 {
     internal class Refatoracoes
     {
-        //Exemplo 1 - Não usar .Wait() ou .Result
-        public async Task Exemmplo1()
+        #region Exemplo 1 - Não usar .Wait() ou .Result
+
+        public async Task Exemplo1()
         {
             // Segura a thread até finalizar o método
             // OUtra thread rodando, ou seja, estamos usando 2 threads quando precisariamos usar apenas 1
             AlgumMetodoAsync().Wait();
         }
 
+        #endregion Exemplo 1 - Não usar .Wait() ou .Result
 
-        //Exemplo 2 - ConfigureAwait(false)
-        public async Task Exemmplo2()
+        #region Exemplo 2 - ConfigureAwait(false)
+
+        public async Task Exemplo2()
         {
             var clientesId = await BuscaIdsDeClientesAsync();
 
@@ -28,15 +31,16 @@ namespace AsyncAwait
             }
         }
 
+        #endregion Exemplo 2 - ConfigureAwait(false)
+
         //Exemplo 3 - não usar async async
-        public async Task<bool> Exemmplo3(int clienteId)
+        public async Task<bool> Exemplo3(int clienteId)
         {
             return await ClienteValidoAsync(clienteId);
         }
 
-
         //Exemplo 4 - usar async await try/catch ou using
-        public Task<bool> Exemmplo4(int clienteId)
+        public Task<bool> Exemplo4(int clienteId)
         {
             try
             {
@@ -50,7 +54,7 @@ namespace AsyncAwait
             }
         }
 
-        public Task<string> Exemmplo4_1()
+        public Task<string> Exemplo4_1()
         {
             using var httpClient = new HttpClient();
             return BaixarPaginaDoGoogle(httpClient);
@@ -59,7 +63,7 @@ namespace AsyncAwait
         //Exemplo 5 - Usar ValueTask
         //Quase uma task mas é uma struct e não uma classe, ou seja é tipo valor e não de referência, como isso ela vai pra stack e não pra heap, o que é menos custoso
         private List<string> _clientesEmCache;
-        public async ValueTask<List<string>> Exemmplo5()
+        public async ValueTask<List<string>> Exemplo5()
         {
             if (_clientesEmCache is not null)
                 return _clientesEmCache;
@@ -91,7 +95,6 @@ namespace AsyncAwait
         {
             await CarregarHistoricoDeOrdensAsync();
         }
-
 
         #region Metodos de exemplo
 
@@ -125,8 +128,7 @@ namespace AsyncAwait
             var html = await client.GetStringAsync("http://google.com");
             return html;
         }
-
-
+        
         public async Task<List<string>> BuscaTodosClientesAsync()
         {
             await Task.Delay(1_000);
