@@ -1,48 +1,20 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AsyncAwait
 {
     internal class Program
     {
-        public static async Task Main(string[] args)
+        private static readonly Refatoracoes refatoracoes = new();
+        public static void Main(string[] args)
         {
-            await AtualizarInformacoesSequencialAsync();
-            await AtualizarInformacoesParaleloAsync();
-            await AtualizarInformacoesParaleloComErroAsync();
+            Exemplos.EscreverAtencao("Iniciando");
+            Console.WriteLine();
 
-            Console.WriteLine("#### FIM DA APLICAÇÃO ####");
+            Console.WriteLine();
+            Exemplos.EscreverAtencao("Finalizado");
             Console.ReadLine();
-        }
-
-        private static void AguardarInicioTeste(string mensagem)
-        {
-            Console.WriteLine(mensagem);
-            Console.ReadLine();
-        }
-
-        private static async Task AtualizarInformacoesParaleloAsync()
-        {
-            AguardarInicioTeste($"#### Aguardando para iniciar {nameof(Exemplos.AtualizarInformacoesParaleloAsync)}...");
-
-            var exemplos = new Exemplos();
-            await exemplos.AtualizarInformacoesParaleloAsync();
-        }
-
-        private static async Task AtualizarInformacoesParaleloComErroAsync()
-        {
-            AguardarInicioTeste($"#### Aguardando para iniciar {nameof(Exemplos.AtualizarInformacoesParaleloComErroAsync)}...");
-
-            var exemplos = new Exemplos();
-            await exemplos.AtualizarInformacoesParaleloComErroAsync();
-        }
-
-        private static async Task AtualizarInformacoesSequencialAsync()
-        {
-            AguardarInicioTeste($"#### Aguardando para iniciar {nameof(Exemplos.AtualizarInformacoesSequencialAsync)}...");
-
-            var exemplos = new Exemplos();
-            await exemplos.AtualizarInformacoesSequencialAsync();
         }
     }
 }

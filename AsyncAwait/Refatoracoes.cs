@@ -1,23 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AsyncAwait
 {
     internal class Refatoracoes
     {
-        //Exemplo 1 - Não usar .Wait() ou .Result
-        public async Task Exemmplo1()
+        #region Exemplo 1
+
+        public void Exemplo1()
         {
-            // Segura a thread até finalizar o método
-            // OUtra thread rodando, ou seja, estamos usando 2 threads quando precisariamos usar apenas 1
+            Console.WriteLine("Inicio");
+
             AlgumMetodoAsync().Wait();
+
+            Console.WriteLine("Fim");
         }
 
+        #endregion Exemplo 1
 
-        //Exemplo 2 - ConfigureAwait(false)
-        public async Task Exemmplo2()
+        #region Exemplo 2 
+
+        public async Task Exemplo2()
         {
             var clientesId = await BuscaIdsDeClientesAsync();
 
@@ -28,15 +34,26 @@ namespace AsyncAwait
             }
         }
 
-        //Exemplo 3 - não usar async async
-        public async Task<bool> Exemmplo3(int clienteId)
+        #endregion Exemplo 2
+
+        #region Exemplo 3
+
+        //Quando não usar .ConfigureAwait(false) - WpfExemplo
+
+        #endregion
+
+        #region Exemplo 4
+
+        public async Task<bool> Exemplo4(int clienteId)
         {
             return await ClienteValidoAsync(clienteId);
         }
 
+        #endregion
 
-        //Exemplo 4 - usar async await try/catch ou using
-        public Task<bool> Exemmplo4(int clienteId)
+        #region Exemplo 5
+
+        public Task<bool> Exemplo5(int clienteId)
         {
             try
             {
@@ -44,116 +61,84 @@ namespace AsyncAwait
             }
             catch (Exception ex)
             {
-                //tratamento de ex
                 Console.WriteLine(ex.Message);
                 return null;
             }
         }
 
-        public Task<string> Exemmplo4_1()
+        public Task<string> Exemplo5_1()
         {
-            using var httpClient = new HttpClient();
-            return BaixarPaginaDoGoogle(httpClient);
+            using (var httpClient = new HttpClient())
+            {
+                return BaixarPaginaDoGoogle(httpClient);
+            }
+
+            //using var httpClient = new HttpClient();
+            //return BaixarPaginaDoGoogle(httpClient);
         }
 
-        //Exemplo 5 - Usar ValueTask
-        //Quase uma task mas é uma struct e não uma classe, ou seja é tipo valor e não de referência, como isso ela vai pra stack e não pra heap, o que é menos custoso
-        private List<string> _clientesEmCache;
-        public async ValueTask<List<string>> Exemmplo5()
-        {
-            if (_clientesEmCache is not null)
-                return _clientesEmCache;
+        #endregion
 
-            try
-            {
-                _clientesEmCache = await BuscaTodosClientesAsync();
-                return _clientesEmCache;
-            }
-            catch (Exception ex)
-            {
-                //tratamento de ex
-                Console.WriteLine(ex.Message);
-                return null;
-            }
-        }
+        #region Exemplo 6
 
-        // Exemplo 6 - Contrutor fire and forget
-        // Não consegue pegar exeção no try/catch
-        // Intelisense pode induzir o erro a quem estiver utilizando o metodo
-        // Concorrencia
         public List<object> Ordens;
+
         public Refatoracoes()
         {
             CarregarHistoricoDeOrdensAsync();
         }
 
-        private async void CarregarHistoricoDeOrdens()
-        {
-            await CarregarHistoricoDeOrdensAsync();
-        }
+        #endregion Exemplo 6
 
+        #region Metodos Auxiliares
 
-        #region Metodos de exemplo
-
-        public async Task AlgumMetodoAsync()
+        public static async Task AlgumMetodoAsync()
         {
             await Task.Delay(1_000);
-            //throw new Exception("BUG 🐛");
         }
 
-        public async Task<List<int>> BuscaIdsDeClientesAsync()
+        public static async Task AlgumMetodoComErroAsync()
+        {
+            await Task.Delay(1_000);
+            throw new Exception("BUG 🐛");
+        }
+
+        public static async Task<List<int>> BuscaIdsDeClientesAsync()
         {
             await Task.Delay(1_000);
             return new List<int>();
         }
 
-        public async Task<List<string>> BuscaNomesDeClientesAsync(int id)
+        public static async Task<List<string>> BuscaNomesDeClientesAsync(int id)
         {
             await Task.Delay(1_000);
             return new List<string>();
         }
 
-        public async Task<bool> ClienteValidoAsync(int id)
+        public static async Task<bool> ClienteValidoAsync(int id)
         {
             await Task.Delay(1_000);
             return true;
         }
 
-        public async Task<string> BaixarPaginaDoGoogle(HttpClient client)
+        public static async Task<string> BaixarPaginaDoGoogle(HttpClient client)
         {
             await Task.Delay(1_000);
             var html = await client.GetStringAsync("http://google.com");
             return html;
         }
 
-
-        public async Task<List<string>> BuscaTodosClientesAsync()
+        public static async Task<List<string>> BuscaTodosClientesAsync()
         {
             await Task.Delay(1_000);
             return new List<string>();
         }
 
-        public async Task CarregarHistoricoDeOrdensAsync()
+        public static async Task CarregarHistoricoDeOrdensAsync()
         {
             await Task.Delay(1_000);
         }
 
-        #endregion
-    }
-
-    public static class TaskExtensions
-    {
-        public static async void FireAndForgetSafeAsync(this Task task, Action onCompleted, Action<Exception> errorHandler = null)
-        {
-            try
-            {
-                await task;
-                onCompleted?.Invoke();
-            }
-            catch (Exception ex)
-            {
-                errorHandler?.Invoke(ex);
-            }
-        }
+        #endregion Metodos Auxiliares
     }
 }

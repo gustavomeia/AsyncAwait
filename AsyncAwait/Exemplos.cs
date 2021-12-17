@@ -4,87 +4,64 @@ using System.Threading.Tasks;
 
 namespace AsyncAwait
 {
-    internal class Exemplos
+    public class Exemplos
     {
         private readonly Stopwatch stopwatch = new();
 
-        public async Task AtualizarInformacoesParaleloAsync()
-        {
-            IniciarContador();
-
-            var taskCartaoCredito = AtualizarCartaoCreditoAsync();
-            var taskContaCorrente = AtualizarContaCorrenteAsync();
-            var taskContaInvestimento = AtualizarContaInvestimentoAsync();
-            await Task.WhenAll(taskCartaoCredito, taskContaCorrente, taskContaInvestimento);
-
-            PararContador();
-        }
-
-        public async Task AtualizarInformacoesParaleloComErroAsync()
-        {
-            IniciarContador();
-
-            var taskCartaoCredito = AtualizarCartaoCreditoAsync();
-            var taskContaCorrente = AtualizarContaCorrenteAsync();
-            var taskAtualizacaoComErroAsync = AtualizacaoComErroAsync();
-            var taskContaInvestimento = AtualizarContaInvestimentoAsync();
-
-            try
-            {
-                await Task.WhenAll(taskCartaoCredito, taskContaCorrente, taskAtualizacaoComErroAsync, taskContaInvestimento);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            PararContador();
-        }
-
-        public async Task AtualizarInformacoesSequencialAsync()
-        {
-            IniciarContador();
-
-            await AtualizarCartaoCreditoAsync();
-            await AtualizarContaCorrenteAsync();
-            await AtualizarContaInvestimentoAsync();
-
-            PararContador();
-        }
-
-        private static async Task AtualizacaoComErroAsync()
-        {
-            await Task.Delay(100);
-            throw new Exception("BUG 🕷️");
-        }
-
-        private static async Task AtualizarCartaoCreditoAsync()
+        public async Task AtualizarCartaoCreditoAsync()
         {
             Console.WriteLine("Atualizando Cartão de Crédito...");
             await Task.Delay(TimeSpan.FromSeconds(3));
-            Console.WriteLine("Limite do Cartão de Crédito: R$ 2400,00");
+            EscreverInfo("Limite do Cartão de Crédito: R$ 2400,00");
         }
 
-        private static async Task AtualizarContaCorrenteAsync()
+        public async Task AtualizarContaCorrenteAsync()
         {
             Console.WriteLine("Atualizando Conta Corrente...");
             await Task.Delay(TimeSpan.FromSeconds(5));
-            Console.WriteLine("Saldo em Conta Corrente: R$ 500,00");
+            EscreverInfo("Saldo em Conta Corrente: R$ 500,00");
         }
 
-        private static async Task AtualizarContaInvestimentoAsync()
+        public async Task AtualizarContaInvestimentoAsync()
         {
             Console.WriteLine("Atualizando Conta Investimento...");
             await Task.Delay(TimeSpan.FromSeconds(2));
-            Console.WriteLine("Você tem R$ 6.000,00 aplicado em sua Conta Investimento");
+            EscreverInfo("Você tem R$ 6.000,00 aplicado em sua Conta Investimento");
         }
 
-        private void IniciarContador() => stopwatch.Restart();
+        public void IniciarContador() => stopwatch.Restart();
 
-        private void PararContador()
+        public void PararContador()
         {
             stopwatch.Stop();
-            Console.WriteLine($"Tempo Execução: {stopwatch.Elapsed.Seconds}s");
+            Console.WriteLine();
+            EscreverErro($"Tempo Execução: {stopwatch.Elapsed.Seconds}s");
         }
+
+        #region Escrever em tela
+        private static readonly ConsoleColor defaultColor = ConsoleColor.White;
+
+        private static void Escrever(string texto, ConsoleColor cor = ConsoleColor.White)
+        {
+            Console.ForegroundColor = cor;
+            Console.WriteLine(texto);
+            Console.ForegroundColor = defaultColor;
+        }
+
+        public static void EscreverAtencao(string texto)
+        {
+            Escrever(texto, ConsoleColor.Yellow);
+        }
+
+        public static void EscreverErro(string texto)
+        {
+            Escrever(texto, ConsoleColor.Red);
+        }
+
+        public static void EscreverInfo(string texto)
+        {
+            Escrever(texto, ConsoleColor.Green);
+        }
+        #endregion
     }
 }
