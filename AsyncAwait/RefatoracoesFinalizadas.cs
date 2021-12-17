@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AsyncAwait
 {
-    internal class RefatoracoesFinalizadas
+    public class RefatoracoesFinalizadas
     {
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
         #region Exemplo 1 - Não usar .Wait() ou .Result
@@ -91,9 +91,9 @@ namespace AsyncAwait
         #endregion Exemplo 5 - Utilizar async await
 
         //----------------------------------------------------------------------------------------------------------------------------------------------------------------
-        #region Exemplo 6 - Safe Fire and Forget
+        #region Exemplo 6 - Safe Fire and Forget ou Factory Pattern
 
-        public List<object> Ordens;
+        //public List<object> Ordens;
 
         // Criar método async void
         // Problema 1: Não consegue pegar exeção no try/catch
@@ -104,28 +104,40 @@ namespace AsyncAwait
         // Como não tem como aguardar o método terminar, não temos como saber quando ele terminou para fazer as validações
         // Existe frameworks para ajudar nesses casos, mas é muito mais complexo do que utilizar um await e fazer as validações
 
-        // Problema 4: Tntellisense pode induzir o erro a quem estiver utilizando o metodo
+        // Problema 4: Intellisense pode induzir o erro a quem estiver utilizando o metodo
         // Quando esse método for utilizado por outro programador, o intellisense vai dizer que ele é um void
         // ou seja, a pessoa vai concluir que a proxima linha só vai ser executada quando o método finalizar, o que não é vdd
 
-        //Solução - Safe fire and forget
-        public RefatoracoesFinalizadas()
+        // Solução 1 - Safe fire and forget
+        //public RefatoracoesFinalizadas()
+        //{
+        //    CarregarHistoricoDeOrdensAsync().FireAndForgetSafeAsync(OnCompleted, OnError);
+        //}
+
+        //private void OnError(Exception ex)
+        //{
+        //    // tratamento de erro
+        //    Console.WriteLine(ex.Message);
+        //}
+
+        //private void OnCompleted()
+        //{
+        //    Console.WriteLine($"CarregarHistoricoDeOrdensAsync Finalizado");
+        //}
+
+        // Solução 2 - Factory Pattern
+        private RefatoracoesFinalizadas()
         {
-            CarregarHistoricoDeOrdensAsync().FireAndForgetSafeAsync(OnCompleted, OnError);
         }
 
-        private void OnError(Exception ex)
+        public static async Task<RefatoracoesFinalizadas> CriarRefatoracoesFinalizadasAsync()
         {
-            // tratamento de erro
-            Console.WriteLine(ex.Message);
+            var refatoracoesFinalizadas = new RefatoracoesFinalizadas();
+            await refatoracoesFinalizadas.CarregarHistoricoDeOrdensAsync();
+            return refatoracoesFinalizadas;
         }
 
-        private void OnCompleted()
-        {
-            Console.WriteLine($"CarregarHistoricoDeOrdensAsync Finalizado");
-        }
-
-        #endregion Exemplo 6 - Safe Fire and Forget
+        #endregion Exemplo 6 - Safe Fire and Forget ou Factory Pattern
 
         #region Metodos de exemplo
 
