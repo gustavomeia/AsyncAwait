@@ -12,7 +12,11 @@ namespace AsyncAwait
 
         public void Exemplo1()
         {
-            AlgumMetodoAsync().GetAwaiter().GetResult();
+            Console.WriteLine("Inicio");
+
+            AlgumMetodoAsync().Wait();
+
+            Console.WriteLine("Fim");
         }
 
         #endregion Exemplo 1
@@ -21,12 +25,12 @@ namespace AsyncAwait
 
         public async Task Exemplo2()
         {
-            var clientesId = await BuscaIdsDeClientesAsync().ConfigureAwait(false);
+            var clientesId = await BuscaIdsDeClientesAsync();
 
             foreach (var id in clientesId)
             {
-                var nome = await BuscaNomesDeClientesAsync(id).ConfigureAwait(false);
-                Program.EscreverInfo($"{id}: {nome}");
+                var nome = await BuscaNomesDeClientesAsync(id);
+                Console.WriteLine($"{id}: {nome}");
             }
         }
 
@@ -40,9 +44,9 @@ namespace AsyncAwait
 
         #region Exemplo 4
 
-        public Task<bool> Exemplo4(int clienteId)
+        public async Task<bool> Exemplo4(int clienteId)
         {
-            return ClienteValidoAsync(clienteId);
+            return await ClienteValidoAsync(clienteId);
         }
 
         #endregion
@@ -57,7 +61,7 @@ namespace AsyncAwait
             }
             catch (Exception ex)
             {
-                Program.EscreverErro(ex.Message);
+                Console.WriteLine(ex.Message);
                 return null;
             }
         }
@@ -68,7 +72,6 @@ namespace AsyncAwait
             {
                 return BaixarPaginaDoGoogle(httpClient);
             }
-
 
             //using var httpClient = new HttpClient();
             //return BaixarPaginaDoGoogle(httpClient);
@@ -85,78 +88,57 @@ namespace AsyncAwait
             CarregarHistoricoDeOrdensAsync();
         }
 
-
         #endregion Exemplo 6
 
         #region Metodos Auxiliares
 
-        public async Task AlgumMetodoAsync()
+        public static async Task AlgumMetodoAsync()
         {
             await Task.Delay(1_000);
-            //throw new Exception("BUG 🐛");
         }
 
-        public async Task AlgumMetodoComErroAsync()
+        public static async Task AlgumMetodoComErroAsync()
         {
             await Task.Delay(1_000);
             throw new Exception("BUG 🐛");
         }
 
-        public async Task<List<int>> BuscaIdsDeClientesAsync()
+        public static async Task<List<int>> BuscaIdsDeClientesAsync()
         {
             await Task.Delay(1_000);
             return new List<int>();
         }
 
-        public async Task<List<string>> BuscaNomesDeClientesAsync(int id)
+        public static async Task<List<string>> BuscaNomesDeClientesAsync(int id)
         {
             await Task.Delay(1_000);
             return new List<string>();
         }
 
-        public async Task<bool> ClienteValidoAsync(int id)
+        public static async Task<bool> ClienteValidoAsync(int id)
         {
             await Task.Delay(1_000);
             return true;
         }
 
-        public async Task<string> BaixarPaginaDoGoogle(HttpClient client)
+        public static async Task<string> BaixarPaginaDoGoogle(HttpClient client)
         {
             await Task.Delay(1_000);
             var html = await client.GetStringAsync("http://google.com");
             return html;
         }
 
-        public async Task<List<string>> BuscaTodosClientesAsync()
+        public static async Task<List<string>> BuscaTodosClientesAsync()
         {
             await Task.Delay(1_000);
             return new List<string>();
         }
 
-        public async Task CarregarHistoricoDeOrdensAsync()
+        public static async Task CarregarHistoricoDeOrdensAsync()
         {
             await Task.Delay(1_000);
         }
 
         #endregion Metodos Auxiliares
-    }
-
-    public static class TaskExtensions
-    {
-        public static async void FireAndForgetSafeAsync(
-            this Task task,
-            Action onCompleted = null,
-            Action<Exception> OnError = null)
-        {
-            try
-            {
-                await task;
-                onCompleted?.Invoke();
-            }
-            catch (Exception ex)
-            {
-                OnError?.Invoke(ex);
-            }
-        }
     }
 }

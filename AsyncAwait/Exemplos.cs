@@ -8,31 +8,25 @@ namespace AsyncAwait
     {
         private readonly Stopwatch stopwatch = new();
 
-        public async Task AtualizacaoComErroAsync()
-        {
-            await Task.Delay(100);
-            throw new Exception("BUG 🕷️");
-        }
-
         public async Task AtualizarCartaoCreditoAsync()
         {
             Console.WriteLine("Atualizando Cartão de Crédito...");
             await Task.Delay(TimeSpan.FromSeconds(3));
-            Console.WriteLine("Limite do Cartão de Crédito: R$ 2400,00");
+            EscreverInfo("Limite do Cartão de Crédito: R$ 2400,00");
         }
 
         public async Task AtualizarContaCorrenteAsync()
         {
             Console.WriteLine("Atualizando Conta Corrente...");
             await Task.Delay(TimeSpan.FromSeconds(5));
-            Console.WriteLine("Saldo em Conta Corrente: R$ 500,00");
+            EscreverInfo("Saldo em Conta Corrente: R$ 500,00");
         }
 
         public async Task AtualizarContaInvestimentoAsync()
         {
             Console.WriteLine("Atualizando Conta Investimento...");
             await Task.Delay(TimeSpan.FromSeconds(2));
-            Console.WriteLine("Você tem R$ 6.000,00 aplicado em sua Conta Investimento");
+            EscreverInfo("Você tem R$ 6.000,00 aplicado em sua Conta Investimento");
         }
 
         public void IniciarContador() => stopwatch.Restart();
@@ -41,7 +35,33 @@ namespace AsyncAwait
         {
             stopwatch.Stop();
             Console.WriteLine();
-            Console.WriteLine($"Tempo Execução: {stopwatch.Elapsed.Seconds}s");
+            EscreverErro($"Tempo Execução: {stopwatch.Elapsed.Seconds}s");
         }
+
+        #region Escrever em tela
+        private static readonly ConsoleColor defaultColor = ConsoleColor.White;
+
+        private static void Escrever(string texto, ConsoleColor cor = ConsoleColor.White)
+        {
+            Console.ForegroundColor = cor;
+            Console.WriteLine(texto);
+            Console.ForegroundColor = defaultColor;
+        }
+
+        public static void EscreverAtencao(string texto)
+        {
+            Escrever(texto, ConsoleColor.Yellow);
+        }
+
+        public static void EscreverErro(string texto)
+        {
+            Escrever(texto, ConsoleColor.Red);
+        }
+
+        public static void EscreverInfo(string texto)
+        {
+            Escrever(texto, ConsoleColor.Green);
+        }
+        #endregion
     }
 }

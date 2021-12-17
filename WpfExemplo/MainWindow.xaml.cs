@@ -18,9 +18,9 @@ namespace WpfExemplo
         {
             lblTitulo.Content = $"Calculando quantidade - Thread:{Thread.CurrentThread.ManagedThreadId}";
 
-            var clientesId = await ConsultaQuantidadeClientesAsync().ConfigureAwait(false);
+            var clientesId = await ConsultaQuantidadeClientesAsync();
 
-            lblTitulo.Content = $"Total de {clientesId} cleintes - Thread: {Thread.CurrentThread.ManagedThreadId}";
+            lblTitulo.Content = $"Total de {clientesId} clientes - Thread: {Thread.CurrentThread.ManagedThreadId}";
         }
 
         public async Task<int> ConsultaQuantidadeClientesAsync()

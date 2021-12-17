@@ -32,26 +32,5 @@ namespace ExecucaoParalela
 
             exemplos.PararContador();
         }
-
-        public static async Task AtualizarInformacoesParaleloComErroAsync()
-        {
-            exemplos.IniciarContador();
-
-            var taskCartaoCredito = exemplos.AtualizarCartaoCreditoAsync();
-            var taskContaCorrente = exemplos.AtualizarContaCorrenteAsync();
-            var taskAtualizacaoComErroAsync = exemplos.AtualizacaoComErroAsync();
-            var taskContaInvestimento = exemplos.AtualizarContaInvestimentoAsync();
-
-            try
-            {
-                await Task.WhenAll(taskCartaoCredito, taskContaCorrente, taskAtualizacaoComErroAsync, taskContaInvestimento);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-            exemplos.PararContador();
-        }
     }
 }
